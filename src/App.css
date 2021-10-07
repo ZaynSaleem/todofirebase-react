@@ -1,6 +1,6 @@
-.App {
+/* .App {
   text-align: center;
-}
+} */
 
 .App-logo {
   height: 40vmin;
@@ -27,6 +27,26 @@
 .App-link {
   color: #61dafb;
 }
+
+.btn-add-user {
+  position: fixed;
+  right: 10%;
+  bottom: 5%;
+  border-radius: 55px !important;
+  background-color: #ff6868 !important;
+  border-color: #ff6868 !important;
+}
+.btn-add-user:hover {
+  background-color: #e32a2a !important;
+  border-color: #e32a2a !important;
+}
+.close {
+  border: 1px;
+  background-color: #e9c4c4;
+  border-radius: 3px;
+}
+.modal-dialog {
+  max-width: 58% !important;}
 
 @keyframes App-logo-spin {
   from {

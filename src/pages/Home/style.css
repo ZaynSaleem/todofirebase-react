@@ -1,0 +1,10 @@
+.table-header{
+    background-color:#61bb61;
+    color: white;
+    text-align: center;
+    border: 1px solid #dbdbdb;
+}
+td{
+    border: 1px solid #dbdbdb;
+    text-align: center;
+}

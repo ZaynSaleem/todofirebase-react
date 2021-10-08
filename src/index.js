@@ -11,7 +11,7 @@ import {
   Route,
   useParams,
 } from "react-router-dom";
-import Login from "./pages/login";
+import Index from "./pages/Home";
 
 ReactDOM.render(
   // <React.StrictMode>
@@ -23,8 +23,8 @@ ReactDOM.render(
       <Route exact path="/">
         <App />
       </Route>
-      <Route path="/login">
-        <Login />
+      <Route path="/Index">
+        <Index />
       </Route>
     </Switch>
   </Router>,

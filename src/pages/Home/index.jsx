@@ -1,5 +1,6 @@
 // import logo from "./logo.svg";
-import ".././App.css";
+import "../../App.css";
+import "../Home/style.css"
 import Swal from "sweetalert2";
 import {
   FaBeer,
@@ -34,13 +35,14 @@ import {
   Form,
   FormGroup,
 } from "reactstrap";
+import Header from "../../components/header";
 // import { Container, Button, Link } from 'react-floating-action-button'
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import { useHistory } from "react-router-dom";
 import { useState } from "react";
 
-const Login = () => {
+const Index = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -138,11 +140,12 @@ const Login = () => {
   let count = 0;
   return (
     <div className="App">
-      <Container>
+      <Header/>
+      <Container className="mt-4">
         <Table>
-          <thead>
+          <thead className="table-header">
             <tr>
-              <th>#</th>
+              <th>S No</th>
               <th>First Name</th>
               <th>Last Name</th>
               <th>Email</th>
@@ -163,7 +166,7 @@ const Login = () => {
                 <td>
                   {
                     <Button
-                      className="ml-3"
+                      
                       color="outline-danger"
                       onClick={() => dltEmp(index)}
                     >
@@ -172,7 +175,7 @@ const Login = () => {
                   }
                   {
                     <Button
-                      className="ml-4"
+                      className="ms-3"
                       color="outline-success"
                       onClick={() => editEmp(index)}
                     >
@@ -272,4 +275,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Index;

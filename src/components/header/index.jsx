@@ -5,10 +5,9 @@ import {
   NavbarToggler,
   NavbarBrand,
   Nav,
-
   Container,
 } from "reactstrap";
-import { FaSignOutAlt } from "react-icons/fa";
+
 import "../header/style.css"
 
 const Header = (props) => {

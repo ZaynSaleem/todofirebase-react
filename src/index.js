@@ -9,7 +9,6 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  useParams,
 } from "react-router-dom";
 import Index from "./pages/Home";
 

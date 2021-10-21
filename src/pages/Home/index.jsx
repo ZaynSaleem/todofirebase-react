@@ -1,14 +1,10 @@
-// import logo from "./logo.svg";
 import "../../App.css";
 import "../Home/style.css";
 import Swal from "sweetalert2";
 import { FaUserPlus, FaPlus, FaTrashAlt, FaRegEdit } from "react-icons/fa";
 
-//   import MdAdd from '@material-ui/icons/add';
-//   import MdClose from '@material-ui/icons/clear';
 import {
   InputGroup,
-
   InputGroupText,
   Input,
   Table,
@@ -22,9 +18,7 @@ import {
   ModalFooter,
 } from "reactstrap";
 import Header from "../../components/header";
-// import { Container, Button, Link } from 'react-floating-action-button'
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-
+import firebase, { db } from "../../config/firbase";
 
 import { useState, useEffect } from "react";
 
@@ -36,15 +30,28 @@ const Index = () => {
   const [date, setDate] = useState("");
   const [data, setData] = useState([]);
   const [isIndex, setIsIndex] = useState("");
-  let [isOpen, setOpen] = useState(false);
   const [modal, setModal] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
+  const [id, setId] = useState("");
 
   useEffect(() => {
-    let get = JSON.parse(localStorage.getItem("employee"));
-    if (get && get.length) {
-      setData(get);
-    }
+    db.collection("employee")
+      .get()
+      .then((querySnapshot) => {
+        let arr = [];
+        querySnapshot.forEach((doc) => {
+          let obj = {
+            id: doc.id,
+            firstName: doc.data().firstName,
+            lastName: doc.data().lastName,
+            Email: doc.data().Email,
+            salary: doc.data().alary,
+            date: doc.data().date,
+          };
+          arr.push(obj);
+        });
+        setData(arr);
+      });
   }, []);
 
   const toggle = () => {
@@ -66,43 +73,65 @@ const Index = () => {
   const updateEmp = () => {
     let dupData = [...data];
 
+    db.collection("employee")
+      .doc(id)
+      .update({
+        firstName: firstName,
+        lastName: lastName,
+        Email: email,
+        salary: salary,
+        date: date,
+      })
+      .then(() => {
+        console.log("Document successfully updated!");
+      });
+    console.log(dupData);
     dupData[isIndex].firstName = firstName;
     dupData[isIndex].lastName = lastName;
     dupData[isIndex].Email = email;
     dupData[isIndex].salary = salary;
     dupData[isIndex].date = date;
-
-    setData(dupData);
-    localStorage.setItem("employee", JSON.stringify(dupData));
+    Swal.fire({
+      position: "center",
+      icon: "success",
+      title: "Employee details updated",
+      showConfirmButton: false,
+      timer: 1000,
+    });
 
     setModal(false);
   };
 
-  const editEmp = (edit) => {
+  const editEmp = (edit, id) => {
     setModal(true);
     setIsUpdate(true);
     setIsIndex(edit);
+    setId(id);
     setFirstName(data[edit].firstName);
     setLastName(data[edit].lastName);
     setEmail(data[edit].Email);
     setSalary(data[edit].salary);
     setDate(data[edit].date);
   };
-  // console.log(isIndex);
 
   const dltEmp = (e) => {
-    // console.log(e);
-    data.map((per, index) => {
-      // console.log(index);
-      if (e == index) {
-        console.log("Matched !" + index + " &  " + e);
-        // let updatedData = data.splice(e, 1);
-        let dupdata = [...data];
-        dupdata.splice(e, 1);
-        setData(dupdata);
-        localStorage.setItem("employee", JSON.stringify(dupdata));
-      }
-    });
+    console.log(e);
+
+    db.collection("employee")
+      .doc(e)
+      .delete()
+      .then(() => {
+        console.log("Document successfully deleted!");
+      })
+      .catch((error) => {
+        console.error("Error removing document: ", error);
+      });
+      let dupdata=[...data];
+     let updated = dupdata.filter(x => {
+        return x.id != e  
+      })
+      setData(updated)
+      // console.log(updated);
     Swal.fire({
       position: "center",
       icon: "success",
@@ -113,6 +142,32 @@ const Index = () => {
   };
 
   const addEmp = () => {
+    if (!email || !firstName || !lastName || !salary || !date) {
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: "All Input must be filled",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      return false;
+    }
+
+    db.collection("employee")
+      .add({
+        firstName: firstName,
+        lastName: lastName,
+        Email: email,
+        salary: salary,
+        date: date,
+      })
+      .then((docRef) => {
+        console.log("Document written with ID: ", docRef.id);
+      })
+      .catch((error) => {
+        console.error("Error adding document: ", error);
+      });
+
     let obj = {
       firstName: firstName,
       lastName: lastName,
@@ -120,22 +175,12 @@ const Index = () => {
       salary: salary,
       date: date,
     };
-
-    // console.log(firstName);
-    let get = JSON.parse(localStorage.getItem("employee"));
-    if (get && get.length) {
-      let dupdata = [...data];
-      dupdata.push(obj);
-      setData(dupdata);
-      localStorage.setItem("employee", JSON.stringify(dupdata));
-    } else {
-      setData([obj])
-      localStorage.setItem("employee", JSON.stringify([obj]));
-    }
-    // setData([...data, obj]);
+    let dupdata = [...data];
+    dupdata.push(obj);
+    setData(dupdata);
     setModal(false);
   };
-  // console.log(data);
+
   let count = 0;
   return (
     <div className="App">
@@ -155,38 +200,40 @@ const Index = () => {
           </thead>
           <tbody>
             {!data.length ? (
-             <tr className="text-center">
-               <h5>NO DATA</h5>
-             </tr> 
-            ):(data.map((per, index) => (
-              <tr key={index}>
-                <td>{++count}</td>
-                <td>{per.firstName}</td>
-                <td>{per.lastName}</td>
-                <td>{per.Email}</td>
-                <td>{per.salary}</td>
-                <td>{per.date}</td>
-                <td>
-                  {
-                    <Button
-                      color="outline-danger"
-                      onClick={() => dltEmp(index)}
-                    >
-                      <FaTrashAlt />
-                    </Button>
-                  }
-                  {
-                    <Button
-                      className="ms-3"
-                      color="outline-success"
-                      onClick={() => editEmp(index)}
-                    >
-                      <FaRegEdit />
-                    </Button>
-                  }
-                </td>
+              <tr className="text-center">
+                <td>NO DATA</td>
               </tr>
-            )))}
+            ) : (
+              data.map((per, index) => (
+                <tr key={index}>
+                  <td>{++count}</td>
+                  <td>{per.firstName}</td>
+                  <td>{per.lastName}</td>
+                  <td>{per.Email}</td>
+                  <td>{per.salary}</td>
+                  <td>{per.date}</td>
+                  <td>
+                    {
+                      <Button
+                        color="outline-danger"
+                        onClick={() => dltEmp(per.id)}
+                      >
+                        <FaTrashAlt />
+                      </Button>
+                    }
+                    {
+                      <Button
+                        className="ms-3"
+                        color="outline-success"
+                        onClick={() => editEmp(index, per.id)}
+                      >
+                        <FaRegEdit />
+                      </Button>
+                    }
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </Table>
         <Button className="btn-add-user" onClick={toggle}>

@@ -2,24 +2,13 @@
 import "../../App.css";
 import "../Home/style.css";
 import Swal from "sweetalert2";
-import {
-  FaBeer,
-  FaAddressCard,
-  FaUserPlus,
-  FaPlus,
-  FaTrashAlt,
-  FaRegEdit,
-} from "react-icons/fa";
-import {
-  FloatingMenu,
-  MainButton,
-  ChildButton,
-} from "react-floating-button-menu";
+import { FaUserPlus, FaPlus, FaTrashAlt, FaRegEdit } from "react-icons/fa";
+
 //   import MdAdd from '@material-ui/icons/add';
 //   import MdClose from '@material-ui/icons/clear';
 import {
   InputGroup,
-  InputGroupAddon,
+
   InputGroupText,
   Input,
   Table,
@@ -29,17 +18,14 @@ import {
   Container,
   Modal,
   ModalHeader,
-  Label,
   ModalBody,
   ModalFooter,
-  Form,
-  FormGroup,
 } from "reactstrap";
 import Header from "../../components/header";
 // import { Container, Button, Link } from 'react-floating-action-button'
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-import { useHistory } from "react-router-dom";
+
 import { useState, useEffect } from "react";
 
 const Index = () => {
@@ -59,9 +45,7 @@ const Index = () => {
     if (get && get.length) {
       setData(get);
     }
-   
-   
-  }, [])
+  }, []);
 
   const toggle = () => {
     setModal(!modal);
@@ -80,7 +64,6 @@ const Index = () => {
   );
 
   const updateEmp = () => {
-    
     let dupData = [...data];
 
     dupData[isIndex].firstName = firstName;
@@ -90,10 +73,9 @@ const Index = () => {
     dupData[isIndex].date = date;
 
     setData(dupData);
-    localStorage.setItem('employee',JSON.stringify(dupData));
+    localStorage.setItem("employee", JSON.stringify(dupData));
 
     setModal(false);
- 
   };
 
   const editEmp = (edit) => {
@@ -116,9 +98,9 @@ const Index = () => {
         console.log("Matched !" + index + " &  " + e);
         // let updatedData = data.splice(e, 1);
         let dupdata = [...data];
-        dupdata.splice(e,1);
+        dupdata.splice(e, 1);
         setData(dupdata);
-        localStorage.setItem('employee',JSON.stringify(dupdata))
+        localStorage.setItem("employee", JSON.stringify(dupdata));
       }
     });
     Swal.fire({
@@ -147,6 +129,7 @@ const Index = () => {
       setData(dupdata);
       localStorage.setItem("employee", JSON.stringify(dupdata));
     } else {
+      setData([obj])
       localStorage.setItem("employee", JSON.stringify([obj]));
     }
     // setData([...data, obj]);
@@ -171,7 +154,11 @@ const Index = () => {
             </tr>
           </thead>
           <tbody>
-            {data.map((per, index) => (
+            {!data.length ? (
+             <tr className="text-center">
+               <h5>NO DATA</h5>
+             </tr> 
+            ):(data.map((per, index) => (
               <tr key={index}>
                 <td>{++count}</td>
                 <td>{per.firstName}</td>
@@ -199,7 +186,7 @@ const Index = () => {
                   }
                 </td>
               </tr>
-            ))}
+            )))}
           </tbody>
         </Table>
         <Button className="btn-add-user" onClick={toggle}>

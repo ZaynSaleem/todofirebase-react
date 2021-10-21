@@ -5,14 +5,7 @@ import {
   NavbarToggler,
   NavbarBrand,
   Nav,
-  NavItem,
-  NavLink,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-  NavbarText,
-  Button,
+
   Container,
 } from "reactstrap";
 import { FaSignOutAlt } from "react-icons/fa";
@@ -33,12 +26,7 @@ const Header = (props) => {
           <NavbarToggler onClick={toggle} />
           <Collapse isOpen={isOpen} navbar className="justify-content-end">
             <Nav navbar>
-              <NavItem>
-                <Button color="outline-success" href="/">
-                  Logout
-                  <FaSignOutAlt className="m-1" />
-                </Button>
-              </NavItem>
+
             </Nav>
           </Collapse>
         </Container>

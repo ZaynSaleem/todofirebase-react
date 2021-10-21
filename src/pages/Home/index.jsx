@@ -1,6 +1,6 @@
 // import logo from "./logo.svg";
 import "../../App.css";
-import "../Home/style.css"
+import "../Home/style.css";
 import Swal from "sweetalert2";
 import {
   FaBeer,
@@ -40,7 +40,7 @@ import Header from "../../components/header";
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import { useHistory } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Index = () => {
   const [firstName, setFirstName] = useState("");
@@ -49,19 +49,28 @@ const Index = () => {
   const [salary, setSalary] = useState("");
   const [date, setDate] = useState("");
   const [data, setData] = useState([]);
-  const [isIndex, setIsIndex] = useState("")
+  const [isIndex, setIsIndex] = useState("");
   let [isOpen, setOpen] = useState(false);
   const [modal, setModal] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
-  
+
+  useEffect(() => {
+    let get = JSON.parse(localStorage.getItem("employee"));
+    if (get && get.length) {
+      setData(get);
+    }
+   
+   
+  }, [])
+
   const toggle = () => {
     setModal(!modal);
     setIsUpdate(false);
     setFirstName("");
-    setLastName("")
-    setEmail("")
-    setSalary("")
-    setDate("")
+    setLastName("");
+    setEmail("");
+    setSalary("");
+    setDate("");
   };
 
   const closeBtn = (
@@ -71,43 +80,31 @@ const Index = () => {
   );
 
   const updateEmp = () => {
-    console.log(firstName);
     
-    // let obj = {
-      //   firstName,
-      //   lastName,
-      //   email,
-      //   salary,
-      //   date,
-      // }
-      let dupData = [...data]
-      
-      dupData[isIndex].fName = firstName
-      dupData[isIndex].lName = lastName
-      dupData[isIndex].Email = email
-      dupData[isIndex].salary = salary
-      dupData[isIndex].date = date
-      
-      
-      // let updateData = setData([...data[isIndex], obj])
-      // console.log(updateData);
-      setData(dupData)
-      
-      setModal(false);
-      // console.log(obj);
-  }
+    let dupData = [...data];
+
+    dupData[isIndex].firstName = firstName;
+    dupData[isIndex].lastName = lastName;
+    dupData[isIndex].Email = email;
+    dupData[isIndex].salary = salary;
+    dupData[isIndex].date = date;
+
+    setData(dupData);
+    localStorage.setItem('employee',JSON.stringify(dupData));
+
+    setModal(false);
+ 
+  };
 
   const editEmp = (edit) => {
     setModal(true);
     setIsUpdate(true);
     setIsIndex(edit);
-    setFirstName(data[edit].fName);
-    setLastName(data[edit].lName)
-    setEmail(data[edit].Email)
-    setSalary(data[edit].salary)
-    setDate(data[edit].date)
-    
-    
+    setFirstName(data[edit].firstName);
+    setLastName(data[edit].lastName);
+    setEmail(data[edit].Email);
+    setSalary(data[edit].salary);
+    setDate(data[edit].date);
   };
   // console.log(isIndex);
 
@@ -117,30 +114,49 @@ const Index = () => {
       // console.log(index);
       if (e == index) {
         console.log("Matched !" + index + " &  " + e);
-        let updatedData = data.splice(e, 1);
-        setData([...data]);
+        // let updatedData = data.splice(e, 1);
+        let dupdata = [...data];
+        dupdata.splice(e,1);
+        setData(dupdata);
+        localStorage.setItem('employee',JSON.stringify(dupdata))
       }
+    });
+    Swal.fire({
+      position: "center",
+      icon: "success",
+      title: "User deleted",
+      showConfirmButton: false,
+      timer: 1500,
     });
   };
 
   const addEmp = () => {
     let obj = {
-      fName: firstName,
-      lName: lastName,
+      firstName: firstName,
+      lastName: lastName,
       Email: email,
       salary: salary,
       date: date,
     };
 
-    console.log(firstName);
-    setData([...data, obj]);
+    // console.log(firstName);
+    let get = JSON.parse(localStorage.getItem("employee"));
+    if (get && get.length) {
+      let dupdata = [...data];
+      dupdata.push(obj);
+      setData(dupdata);
+      localStorage.setItem("employee", JSON.stringify(dupdata));
+    } else {
+      localStorage.setItem("employee", JSON.stringify([obj]));
+    }
+    // setData([...data, obj]);
     setModal(false);
   };
   // console.log(data);
   let count = 0;
   return (
     <div className="App">
-      <Header/>
+      <Header />
       <Container className="mt-4">
         <Table>
           <thead className="table-header">
@@ -158,15 +174,14 @@ const Index = () => {
             {data.map((per, index) => (
               <tr key={index}>
                 <td>{++count}</td>
-                <td>{per.fName}</td>
-                <td>{per.lName}</td>
+                <td>{per.firstName}</td>
+                <td>{per.lastName}</td>
                 <td>{per.Email}</td>
                 <td>{per.salary}</td>
                 <td>{per.date}</td>
                 <td>
                   {
                     <Button
-                      
                       color="outline-danger"
                       onClick={() => dltEmp(index)}
                     >

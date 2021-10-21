@@ -4,6 +4,9 @@
     text-align: center;
     border: 1px solid #dbdbdb;
 }
+.table-header th{
+    border: 1px solid #dbdbdb;
+}
 td{
     border: 1px solid #dbdbdb;
     text-align: center;

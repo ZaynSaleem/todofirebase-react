@@ -1,4 +1,8 @@
 .navbar-custom{
   
     border-bottom: 1px solid #61bb61;
+    color: #61bb61 !important;
+}
+.navbar-custom .navbar-text{
+    color: #4b9b4b !important;
 }

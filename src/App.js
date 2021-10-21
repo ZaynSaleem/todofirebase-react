@@ -27,7 +27,7 @@ function App() {
 
     if (name == username && pass == userPass) {
       Swal.fire({
-        position: "top-end",
+        position: "center",
         icon: "success",
         title: "User Logged In",
         showConfirmButton: false,
